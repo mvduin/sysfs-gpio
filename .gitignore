@@ -1,0 +1,3 @@
+*.o
+/input-example-basic
+/input-example-libsystemd
