@@ -59,7 +59,11 @@ void gpio_set_direction_output( struct Gpio const *gpio, bool init_value );
 // will fail if gpio direction is output and event_edge != GPIO_EDGE_NONE.
 void gpio_set_event_edge( struct Gpio const *gpio, enum GpioEdge event_edge );
 
-// wait for configured edge event (POLLPRI on gpio->fd) or timeout.
+// wait for edge event configured using gpio_set_event_edge.
 // timeout has same meaning as for poll().
 // returns true if edge event was detected, false on timeout.
+//
+// this is just a simple wrapper for poll() for the simple use-case of waiting on a single gpio.  for more
+// complex use-cases, just use poll(), epoll, or your favorite event loop to receive POLLPRI events on
+// gpio->fd for each gpio you want to monitor.
 bool gpio_wait_event( struct Gpio const *gpio, int timeout );
