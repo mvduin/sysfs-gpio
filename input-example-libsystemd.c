@@ -25,7 +25,7 @@ int main()
 
 	// open input gpio and add event handler for edge events
 	struct Gpio gpio __attribute__(( cleanup( gpio_close ) )) = GPIO_INITIALIZER;
-	gpio_open_input( &gpio, "/sys/class/gpio/gpio60", GPIO_EDGE_BOTH, false );
+	gpio_open_input( &gpio, "/sys/class/gpio/gpio60", GPIO_EDGE_BOTH, GPIO_RDONLY );
 	sd_event_add_io( evloop, NULL, gpio.fd, EPOLLPRI, gpio_changed_handler, &gpio );
 
 	// print current input value

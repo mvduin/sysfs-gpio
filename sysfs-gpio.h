@@ -14,6 +14,18 @@ struct Gpio {
 
 #define GPIO_INITIALIZER ((struct Gpio){ -1, -1, NULL })
 
+enum GpioOpenMode {
+	GPIO_RDONLY	= 2,  // only gpio_read() allowed
+	GPIO_RDWR	= 3,  // both gpio_read() and gpio_write() allowed
+};
+
+// NOTE: these are logical values for the gpio.  how these map to signal level (low or high) depends on how the
+// gpio has been declared in device-tree.
+enum GpioValue {
+	GPIO_INACTIVE	= 0,
+	GPIO_ACTIVE	= 1,
+};
+
 enum GpioEdge {
 	GPIO_EDGE_NONE,
 	GPIO_EDGE_RISING,
@@ -23,15 +35,15 @@ enum GpioEdge {
 
 
 // open gpio, do not change current direction (or value, if output).
-// if input_only is true, gpio_write() will not be supported.
-void gpio_open( struct Gpio *gpio, char const *path, bool input_only );
+// for backwards compatibility, mode 0 and 1 are interpreted as GPIO_RDWR and GPIO_RDONLY respectively.
+void gpio_open( struct Gpio *gpio, char const *path, enum GpioOpenMode mode );
 
 // open gpio and initialize as input.
-// if bidirectional is false, gpio will be opened as input-only.
-void gpio_open_input( struct Gpio *gpio, char const *path, enum GpioEdge event_edge, bool bidirectional );
+// for backwards compatibility, mode 0 and 1 are interpreted as GPIO_RDONLY and GPIO_RDWR respectively.
+void gpio_open_input( struct Gpio *gpio, char const *path, enum GpioEdge event_edge, enum GpioOpenMode mode );
 
 // open gpio and initialize as output.
-void gpio_open_output( struct Gpio *gpio, char const *path, bool init_value );
+void gpio_open_output( struct Gpio *gpio, char const *path, enum GpioValue init_value );
 
 // close gpio.  it is safe to call this on a zero-filled struct Gpio.  it is safe to call this more than once.
 void gpio_close( struct Gpio *gpio );
@@ -42,10 +54,10 @@ bool gpio_is_active_low( struct Gpio const *gpio );
 
 
 // get current input value or output value (depending on direction).
-bool gpio_read( struct Gpio const *gpio );
+enum GpioValue gpio_read( struct Gpio const *gpio );
 
 // set output value.  will fail if direction is not set to output or gpio was opened as input-only.
-void gpio_write( struct Gpio const *gpio, bool value );
+void gpio_write( struct Gpio const *gpio, enum GpioValue value );
 
 
 // check gpio direction.
@@ -56,7 +68,7 @@ void gpio_set_direction_input( struct Gpio const *gpio );
 
 // change direction to output.  will fail if gpio is not bidirectional.
 // will also fail if event edge is configured to anything other than GPIO_EDGE_NONE.
-void gpio_set_direction_output( struct Gpio const *gpio, bool init_value );
+void gpio_set_direction_output( struct Gpio const *gpio, enum GpioValue init_value );
 
 
 // change which edge(s) trigger an event (POLLPRI on gpio->fd).

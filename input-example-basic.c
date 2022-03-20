@@ -6,7 +6,7 @@
 int main()
 {
 	struct Gpio gpio = GPIO_INITIALIZER;
-	gpio_open_input( &gpio, "/sys/class/gpio/gpio60", GPIO_EDGE_BOTH, false );
+	gpio_open_input( &gpio, "/sys/class/gpio/gpio60", GPIO_EDGE_BOTH, GPIO_RDONLY );
 
 	int const timeout_ms = 3000;  // -1 = no timeout
 
