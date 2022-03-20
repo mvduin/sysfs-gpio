@@ -1,6 +1,10 @@
 #pragma once
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // use one of the gpio_open* functions to initialize this structure and use gpio_close() to clean it up.
 struct Gpio {
 	int fd;		// of value attribute (gets POLLPRI event when configured edge is detected)
@@ -67,3 +71,7 @@ void gpio_set_event_edge( struct Gpio const *gpio, enum GpioEdge event_edge );
 // complex use-cases, just use poll(), epoll, or your favorite event loop to receive POLLPRI events on
 // gpio->fd for each gpio you want to monitor.
 bool gpio_wait_event( struct Gpio const *gpio, int timeout );
+
+#ifdef __cplusplus
+}  // extern "C"
+#endif
