@@ -1,6 +1,6 @@
 #include "sysfs-gpio.h"
 
-#define _GNU_SOURCE
+#define _GNU_SOURCE 1
 #include <assert.h>
 #include <fcntl.h>
 #include <poll.h>

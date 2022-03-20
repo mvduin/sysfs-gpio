@@ -6,7 +6,7 @@
 
 static int gpio_changed_handler( sd_event_source *s, int fd, uint32_t revents, void *userdata )
 {
-	struct Gpio const *gpio = userdata;
+	struct Gpio const *gpio = (struct Gpio const *)userdata;
 
 	printf( "%d\n", gpio_read( gpio ) );
 
